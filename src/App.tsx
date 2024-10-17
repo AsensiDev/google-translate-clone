@@ -1,73 +1,40 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { Container, Row, Col, Button } from 'react-bootstrap'
 import './App.css'
-import { useReducer } from 'react'
-import type { State, Action } from './types.d.ts'
+import { useStore } from './hooks/useStore'
+import { AUTO_LANGUAGE } from './constants'
+import { ArrowIcon } from './components/Icons'
 
-// 1. create an initialState
-const initialState: State = {
-  fromLanguage: 'auto',
-  toLanguage: 'en',
-  fromText: '',
-  result: '',
-  loading: false
-}
+export default function App() {
 
-// 2. create a reducer
-function reducer(state: State, action: Action) {
-  const { type } = action
+  const { fromLanguage, toLanguage, interchangeLanguages } = useStore()
 
-  if(type === 'INTERCHANGE_LANGUAGES') {
-    return {
-      ...state,
-      fromLanguage: state.toLanguage,
-      toLanguage: state.fromLanguage
-    }
-  }
-
-  if(type === 'SET_FROM_LANGUAGE') {
-    return {
-      ...state,
-      fromLanguage: action.payload
-    }
-  }
-
-  if(type === 'SET_TO_LANGUAGE') {
-    return {
-      ...state, 
-      toLanguage: action.payload
-    }
-  }
-
-  if(type === 'SET_FROM_TEXT') {
-    return {
-      ...state, 
-      loading: true,
-      fromText: action.payload,
-      result: ''
-    }
-  }
-
-  if(type === 'SET_RESULT') {
-    return {
-      ...state,
-      loading: false,
-      result: action.payload
-    }
-  }
-
-  return state
-}
-
-function App() {
-
-  // 3. use th ehook usereducer
-  const [state, dispatch] = useReducer(reducer, initialState)
+  console.log({fromLanguage})
 
   return (
-    <div className="App">
+    <Container fluid>
       <h1>Google Translate</h1>
-    </div>
+
+      <Row>
+        <Col>
+          <h2>From</h2>
+          {fromLanguage}
+        </Col>
+
+        <Col>
+          <Button disabled={fromLanguage === AUTO_LANGUAGE} onClick={interchangeLanguages}>
+            <ArrowIcon />
+          </Button>
+        </Col>
+
+        <Col>
+          <h2>To</h2>
+          {toLanguage}
+        </Col>
+      </Row>
+    </Container>
   )
 }
 
-export default App
+
+
